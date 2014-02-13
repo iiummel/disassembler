@@ -50,11 +50,17 @@ newLine
 CR      EQU     $D               *carriage return only
 LF      EQU     $A               *Line feed only
 crlf    DC.B    CR, LF, 0         *carriage return & line feed, null
-WELCOME_MESSAGE DC.B    'Team Bits Final Project! The 68k Disassembler',0              
+WELCOME_MESSAGE DC.B    'Team Bits Final Project! The 68k Disassembler',CR,LF
+                DC.B    'Program Authors: Himanshu Mehru, Igor Ummel, Will Tanna', 0              
                 
-START_ADD_MESSAGE   DC.B    'Please enter a starting address: ',0
-END_ADD_MESSAGE     DC.B    'Please enter an ending address: ',0
+START_ADD_MESSAGE   DC.B    'Please enter a starting address from $00000000 to $00FFFFFE: ',0
+END_ADD_MESSAGE     DC.B    'Please enter an ending address between ',0
+ODD_ERROR           DC.B    'Please enter an even address: ',0
+OUT_OF_RANGE_MSG    DC.B    'The address you entered is out of range. ',0
+
+NEXT_PAGE_MSG       DC.B    'Not quite finished yet. Please press the return key to view more...',0
     END    START        ; last line of source
+
 
 
 
