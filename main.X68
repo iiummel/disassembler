@@ -10,10 +10,11 @@ end     EQU $00FFFFFE   * Maximum ending address
  ORG    $1000
 START:                  ; first instruction of program
 *Code for Welcome Message
+    LEA     stack, SP           *load the SP (stack pointer)
     LEA  WELCOME_MESSAGE, A1    *load welcome message into a1
     BSR    printString          *print welcome message to screen
     BSR    newLine              *goto the next line (look at newLine subroutine   
-    
+    BSR    newLine              *leave an empty line for better appearance
 * Code for starting address  //NOTE: ***********check for correct input 
     LEA  START_ADD_MESSAGE, A1 * load start address message into A1
     BSR     printString        *print start address message to screen 
@@ -51,7 +52,7 @@ newLine
 CR      EQU     $D               *carriage return only
 LF      EQU     $A               *Line feed only
 crlf    DC.B    CR, LF, 0         *carriage return & line feed, null
-WELCOME_MESSAGE DC.B    'Team Bits Final Project! The 68k Disassembler',CR,LF
+WELCOME_MESSAGE DC.B    'Team Bits Final Project! The 68k Disassembler',CR, LF
                 DC.B    'Program Authors: Himanshu Mehru, Igor Ummel, Will Tanna', 0              
                 
 START_ADD_MESSAGE   DC.B    'Please enter a starting address from $00000000 to $00FFFFFE: ',0
