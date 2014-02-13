@@ -4,7 +4,7 @@
 * Date       :02-08-2014
 * Description: This program disassembles machine code to Assembly Lanuage
 *-----------------------------------------------------------
-stack   EQU $00005000   *stack pointer
+stack   EQU $0000A000   *stack pointer
 begin   EQU $00000000   * Minimum starting address
 end     EQU $00FFFFFE   * Maximum ending address  
  ORG    $1000
