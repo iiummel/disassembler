@@ -4,19 +4,22 @@
 * Date       :02-08-2014
 * Description: This program disassembles machine code to Assembly Lanuage
 *-----------------------------------------------------------
-    ORG    $1000
+stack   EQU $00005000   *stack pointer
+begin   EQU $00000000   * Minimum starting address
+end     EQU $00FFFFFE   * Maximum ending address  
+ ORG    $1000
 START:                  ; first instruction of program
 *Code for Welcome Message
-    LEA  WELCOME_MESSAGE, A1
-    MOVE.B #14, D0
+    LEA  WELCOME_MESSAGE, A1 *load welcome message into a1
+    MOVE.B #14, D0           *Display welcome message with trap task #14
     TRAP   #15
-
+    BSR    newLine           *goto the next line (look at newLine subroutine   
     
 * Code for starting address  //NOTE: ***********check for correct input 
     LEA  START_ADD_MESSAGE, A1 * load start address message into A1
     MOVE.B #14, D0              *Trap Task 14 prints D0 contents to console
     TRAP   #15
-
+    
     MOVE.B  #4, D0              *Trap task 4 reads a number 
     TRAP    #15
     MOVE.L  D1,D0               *start address is in D0
@@ -31,35 +34,28 @@ START:                  ; first instruction of program
     TRAP    #15
     MOVE.L  D1,D2               *end address is in D2
     
-*Code for displaying everything from starting address to ending address
-LOOP        
-        MOVE.L D0, D1
-        MOVE.B #15, D0
-        TRAP #15        
-           
-        
-        MOVE.L D1, D0
-        CMP.L   D0, D2
-        BEQ     DONE
-        ADD.B #01, D0
-        BRA     LOOP
-        
-DONE    MOVE.B  #9, D0              *Trap task 9 halts the program
-        TRAP    #15
 
-
+* Subroutine to display Carriage Return and Line Feed
+newLine 
+    movem.l d0/a1,-(SP)         *push d0 & a1
+    move    #14,d0              *task number into D0
+    lea     crlf,a1             *address of string
+    trap    #15                 *display return, linefeed
+    movem.l (SP)+,d0/a1         *restore d0 & a1
+    rts                         *return
+ 
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
-CR  EQU $0D *CARRIAGE RETURN
-LF  EQU $0A *LINE FEED
-WELCOME_MESSAGE DC.B    'Welcome to the Team Bits Final Project',CR,LF
-                DC.B    'This is a disassembler where your machine code',CR,LF
-                DC.B    'will be transated into 68K assembly language', CR, LF,0
+CR      EQU     $D               *carriage return only
+LF      EQU     $A               *Line feed only
+crlf    DC.B    CR, LF, 0         *carriage return & line feed, null
+WELCOME_MESSAGE DC.B    'Team Bits Final Project! The 68k Disassembler',0              
                 
 START_ADD_MESSAGE   DC.B    'Please enter a starting address: ',0
 END_ADD_MESSAGE     DC.B    'Please enter an ending address: ',0
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
