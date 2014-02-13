@@ -10,15 +10,13 @@ end     EQU $00FFFFFE   * Maximum ending address
  ORG    $1000
 START:                  ; first instruction of program
 *Code for Welcome Message
-    LEA  WELCOME_MESSAGE, A1 *load welcome message into a1
-    MOVE.B #14, D0           *Display welcome message with trap task #14
-    TRAP   #15
-    BSR    newLine           *goto the next line (look at newLine subroutine   
+    LEA  WELCOME_MESSAGE, A1    *load welcome message into a1
+    BSR    printString          *print welcome message to screen
+    BSR    newLine              *goto the next line (look at newLine subroutine   
     
 * Code for starting address  //NOTE: ***********check for correct input 
     LEA  START_ADD_MESSAGE, A1 * load start address message into A1
-    MOVE.B #14, D0              *Trap Task 14 prints D0 contents to console
-    TRAP   #15
+    BSR     printString        *print start address message to screen 
     
     MOVE.B  #4, D0              *Trap task 4 reads a number 
     TRAP    #15
@@ -27,14 +25,17 @@ START:                  ; first instruction of program
 
 * Code for ending address  //NOTE: ***********check for correct input 
     LEA  END_ADD_MESSAGE, A1    * load end address message into A1
-    MOVE.B #14, D0              *Trap Task 14 prints D0 contents to console
-    TRAP   #15
+    BSR     printString
 
     MOVE.B  #4, D0              *Trap task 4 reads a number 
     TRAP    #15
     MOVE.L  D1,D2               *end address is in D2
     
-
+* Subroutine to print a message onto the screen
+printString
+    MOVE.B #14, D0              *Trap task 14 prints D0 contents to console
+    TRAP   #15
+    RTS
 * Subroutine to display Carriage Return and Line Feed
 newLine 
     movem.l d0/a1,-(SP)         *push d0 & a1
