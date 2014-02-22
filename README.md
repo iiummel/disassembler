@@ -4,8 +4,7 @@ disassembler
 Final Project for CSS 422
 This project disassembles machine code into 68k assembly language.
 
-Data Registers
-
+<br>Data Registers
 <br>D0 : Traps
 <br>D1 : Traps
 <br>D2 : I/O
