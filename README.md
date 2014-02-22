@@ -6,8 +6,8 @@ This project disassembles machine code into 68k assembly language.
 
 Data Registers
 
-D0 : Traps
-D0 : Traps
+<br>D0 : Traps
+<br>D0 : Traps
 D0 : I/O
 D0 : Share
 D0 : Share
