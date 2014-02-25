@@ -1,8 +1,8 @@
 *-----------------------------------------------------------
-* Title      :  Disassembler
+* Title      :  Team Bits Disassembler
 * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
-* Date       :
-* Description:
+* Date       :  Who cares? Our code is timeless mofo.
+* Description:  Bish, you know what the fuck dis shiit izz.
 *-----------------------------------------------------------
     ORG    $1000
 START:                  
@@ -41,6 +41,7 @@ INTRO       DC.B    'Disassembler Program for Team Bits',CR,LF,0
 ST_ADDR     DC.B    'Please enter a starting address: ',0
 EN_ADDR     DC.B    'Please enter an ending address: ',0
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
