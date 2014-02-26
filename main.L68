@@ -1,82 +1,89 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.14.00
-Created On: 2/18/2014 12:55:13 PM
+Created On: 2/25/2014 6:47:07 PM
 
 00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Title      :Final Project Disassembler
-00000000                             3  * Written by :Himanshu Mehru, Igor Ummel, Will Tanna    
-00000000                             4  * Date       :02-08-2014
-00000000                             5  * Description: This program disassembles machine code to Assembly Lanuage
+00000000                             2  * Title      :  Team Bits Disassembler
+00000000                             3  * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
+00000000                             4  * Date       :  Who cares? Our code is timeless mofo.
+00000000                             5  * Description:  68K Disassembler
 00000000                             6  *-----------------------------------------------------------
 00001000                             7      ORG    $1000
-00001000                             8  START:                  ; first instruction of program
-00001000                             9  *Code for Welcome Message
-00001000  43F9 00001052             10      LEA  WELCOME_MESSAGE, A1
-00001006  103C 000E                 11      MOVE.B #14, D0
-0000100A  4E4F                      12      TRAP   #15
-0000100C                            13  
-0000100C                            14      
-0000100C                            15  * Code for starting address  //NOTE: ***********check for correct input 
-0000100C  43F9 000010D9             16      LEA  START_ADD_MESSAGE, A1 * load start address message into A1
-00001012  103C 000E                 17      MOVE.B #14, D0              *Trap Task 14 prints D0 contents to console
-00001016  4E4F                      18      TRAP   #15
-00001018                            19  
-00001018  103C 0004                 20      MOVE.B  #4, D0              *Trap task 4 reads a number 
-0000101C  4E4F                      21      TRAP    #15
-0000101E  2001                      22      MOVE.L  D1,D0               *start address is in D0
-00001020                            23   
-00001020                            24  
-00001020                            25  * Code for ending address  //NOTE: ***********check for correct input 
-00001020  43F9 000010FB             26      LEA  END_ADD_MESSAGE, A1    * load end address message into A1
-00001026  103C 000E                 27      MOVE.B #14, D0              *Trap Task 14 prints D0 contents to console
-0000102A  4E4F                      28      TRAP   #15
-0000102C                            29  
-0000102C  103C 0004                 30      MOVE.B  #4, D0              *Trap task 4 reads a number 
-00001030  4E4F                      31      TRAP    #15
-00001032  2401                      32      MOVE.L  D1,D2               *end address is in D2
-00001034                            33      
-00001034                            34  *Code for displaying everything from starting address to ending address
-00001034                            35  LOOP        
-00001034  2200                      36          MOVE.L D0, D1
-00001036  103C 000F                 37          MOVE.B #15, D0
-0000103A  4E4F                      38          TRAP #15        
-0000103C                            39             
-0000103C                            40          
-0000103C  2001                      41          MOVE.L D1, D0
-0000103E  B480                      42          CMP.L   D0, D2
-00001040  6700 0006                 43          BEQ     DONE
-00001044  5200                      44          ADD.B #01, D0
-00001046  60EC                      45          BRA     LOOP
-00001048                            46          
-00001048  103C 0009                 47  DONE    MOVE.B  #9, D0              *Trap task 9 halts the program
-0000104C  4E4F                      48          TRAP    #15
-0000104E                            49  
-0000104E                            50  
-0000104E  FFFF FFFF                 51      SIMHALT             ; halt simulator
-00001052                            52  
-00001052                            53  * Put variables and constants here
-00001052  =0000000D                 54  CR  EQU $0D *CARRIAGE RETURN
-00001052  =0000000A                 55  LF  EQU $0A *LINE FEED
-00001052= 57 65 6C 63 6F 6D ...     56  WELCOME_MESSAGE DC.B    'Welcome to the Team Bits Final Project',CR,LF
-0000107A= 54 68 69 73 20 69 ...     57                  DC.B    'This is a disassembler where your machine code',CR,LF
-000010AA= 77 69 6C 6C 20 62 ...     58                  DC.B    'will be transated into 68K assembly language', CR, LF,0
-000010D9                            59                  
-000010D9= 50 6C 65 61 73 65 ...     60  START_ADD_MESSAGE   DC.B    'Please enter a starting address: ',0
-000010FB= 50 6C 65 61 73 65 ...     61  END_ADD_MESSAGE     DC.B    'Please enter an ending address: ',0
-0000111C                            62      END    START        ; last line of source
+00001000                             8  START:                  
+00001000                             9      
+00001000  43F9 0000106C             10              LEA        INTRO,A1         Display intro message
+00001006  103C 000E                 11              MOVE.B     #14,D0
+0000100A  4E4F                      12              TRAP       #15
+0000100C                            13   
+0000100C  6000 0006                 14              BRA        START_ADDR       Branch to request starting address
+00001010                            15  
+00001010  FFFF FFFF                 16      SIMHALT             ; halt simulator
+00001014                            17  
+00001014  43F9 00001091             18  START_ADDR  LEA        ST_ADDR_MSG,A1   Display starting address message
+0000101A  103C 000E                 19              MOVE.B     #14,D0
+0000101E  4E4F                      20              TRAP       #15
+00001020                            21             
+00001020  43F9 000010D4             22              LEA        ST_INPUT,A1      Stores user input into memory
+00001026  7002                      23              MOVEQ      #2,D0
+00001028  4E4F                      24              TRAP       #15
+0000102A                            25              
+0000102A  6000 001C                 26              BRA        ASC_HEX           Convert ascii to hex         
+0000102E                            27              *BRA END_ADDR
+0000102E                            28  
+0000102E  43F9 000010B3             29  END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
+00001034  103C 000E                 30              MOVE.B     #14,D0
+00001038  4E4F                      31              TRAP       #15
+0000103A                            32              
+0000103A  43F9 00001124             33              LEA        EN_INPUT,A1      Stores user input into memory
+00001040  7002                      34              MOVEQ      #2,D0
+00001042  4E4F                      35              TRAP       #15
+00001044  6000 0002                 36              BRA        ASC_HEX           Convert ascii to hex    
+00001048                            37  
+00001048  1419                      38  ASC_HEX     MOVE.B     (A1)+,D2
+0000104A  0C02 0039                 39              CMPI.B      #$39,D2          See if D2 is a number
+0000104E  6F00 0014                 40              BLE         CON_NUM
+00001052  0402 0037                 41  CON_LET     SUBI.B      #$37,D2
+00001056  0C02 0010                 42              CMPI.B      #$10,D2
+0000105A  6700 0002                 43              BEQ         CON_A
+Line 44 ERROR: Invalid syntax
+0000105E                            44              CMPI.B      $#9,D2
+0000105E                            45              
+0000105E  740A                      46  CON_A       MOVEQ      #$A,D2
+00001060                            47  
+00001060  FFFF FFFF                 48      SIMHALT
+00001064  0402 0030                 49  CON_NUM     SUBI.B      #$30,D2
+00001068  FFFF FFFF                 50      SIMHALT
+0000106C                            51  ********************************************************
+0000106C                            52  * DISPLAY MESSAGES                                     *
+0000106C                            53  ********************************************************
+0000106C                            54  
+0000106C  =0000000D                 55  CR          EQU     $0D
+0000106C  =0000000A                 56  LF          EQU     $0A
+0000106C= 44 69 73 61 73 73 ...     57  INTRO       DC.B    'Disassembler Program for Team Bits',CR,LF,0
+00001091= 50 6C 65 61 73 65 ...     58  ST_ADDR_MSG DC.B    'Please enter a starting address: ',0
+000010B3= 50 6C 65 61 73 65 ...     59  EN_ADDR_MSG DC.B    'Please enter an ending address: ',0
+000010D4                            60  ST_INPUT    DS.B    80
+00001124                            61  EN_INPUT    DS.B    80
+00001174                            62      END    START        ; last line of source
 
-No errors detected
+1 error detected
 No warnings generated
 
 
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+ASC_HEX             1048
+CON_A               105E
+CON_LET             1052
+CON_NUM             1064
 CR                  D
-DONE                1048
-END_ADD_MESSAGE     10FB
+END_ADDR            102E
+EN_ADDR_MSG         10B3
+EN_INPUT            1124
+INTRO               106C
 LF                  A
-LOOP                1034
 START               1000
-START_ADD_MESSAGE   10D9
-WELCOME_MESSAGE     1052
+START_ADDR          1014
+ST_ADDR_MSG         1091
+ST_INPUT            10D4
