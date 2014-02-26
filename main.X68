@@ -2,7 +2,7 @@
 * Title      :  Team Bits Disassembler
 * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
 * Date       :  Who cares? Our code is timeless mofo.
-* Description:  Bish, you know what the fuck dis shiit izz.
+* Description:  68K Disassembler
 *-----------------------------------------------------------
     ORG    $1000
 START:                  
@@ -41,7 +41,7 @@ ASC_HEX     MOVE.B     (A1)+,D2
 CON_LET     SUBI.B      #$37,D2
             CMPI.B      #$10,D2
             BEQ         CON_A
-            CMPI.B      $#9,D2
+            CMP.B      $#9,D2
             
 CON_A       MOVEQ      #$A,D2
 
@@ -60,6 +60,7 @@ EN_ADDR_MSG DC.B    'Please enter an ending address: ',0
 ST_INPUT    DS.B    80
 EN_INPUT    DS.B    80
     END    START        ; last line of source
+
 
 
 
