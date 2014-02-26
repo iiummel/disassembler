@@ -23,8 +23,7 @@ START_ADDR  LEA        ST_ADDR_MSG,A1   Display starting address message
             MOVEQ      #2,D0
             TRAP       #15
             
-            BRA        ASC_HEX           Convert ascii to hex         
-            *BRA END_ADDR
+            JSR        ASC_HEX          Convert ascii to hex         
 
 END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
             MOVE.B     #14,D0
@@ -33,21 +32,30 @@ END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
             LEA        EN_INPUT,A1      Stores user input into memory
             MOVEQ      #2,D0
             TRAP       #15
-            BRA        ASC_HEX           Convert ascii to hex    
+            JSR        ASC_HEX          Branch to ascii to hex convesion 
 
-ASC_HEX     MOVE.B     (A1)+,D2
-            CMPI.B      #$39,D2          See if D2 is a number
-            BLE         CON_NUM
-CON_LET     SUBI.B      #$37,D2
-            CMPI.B      #$10,D2
-            BEQ         CON_A
-            CMP.B      $#9,D2
+ASC_HEX     CMPI.B      #$0,D1          Check to see if all ascii characters are converted
+            BEQ         END
+            MOVE.B     (A1)+,D2         Move first number to data register
+            CMPI.B      #$39,D2         See if D2 is a number
+            BLE         CON_NUM          
             
-CON_A       MOVEQ      #$A,D2
+CON_LET     SUBI.B      #$37,D2         Convert ascii to hex letter
+            BRA         COUNTER        
 
-    SIMHALT
-CON_NUM     SUBI.B      #$30,D2
-    SIMHALT
+CON_NUM     SUBI.B      #$30,D2         Convert ascii to hex number
+            BRA         COUNTER
+
+            
+COUNTER     SUBI.B      #$1,D1          Decrement counter
+            ADD.B       D2,D3           Add converted number to rest of convereted address
+            CMPI.B      #$0,D1          Check to see if all ascii characters are converted
+            BEQ         ASC_HEX        
+            ROL.L       #4,D3           Move converted address number to the left to add new number.
+
+            BRA         ASC_HEX
+
+END         RTS
 ********************************************************
 * DISPLAY MESSAGES                                     *
 ********************************************************
@@ -60,12 +68,6 @@ EN_ADDR_MSG DC.B    'Please enter an ending address: ',0
 ST_INPUT    DS.B    80
 EN_INPUT    DS.B    80
     END    START        ; last line of source
-
-
-
-
-
-
 
 
 *~Font name~Courier New~
