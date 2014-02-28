@@ -2,7 +2,7 @@
 * Title      :  Team Bits Disassembler
 * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
 * Date       :  Who cares? Our code is timeless mofo.
-* Description:  68K Disassembler
+* Description:  Bish, you know what the fuck dis shiit izz.
 *-----------------------------------------------------------
     ORG    $1000
 START:                  
@@ -23,7 +23,8 @@ START_ADDR  LEA        ST_ADDR_MSG,A1   Display starting address message
             MOVEQ      #2,D0
             TRAP       #15
             
-            JSR        ASC_HEX          Convert ascii to hex         
+            JSR        ASC_HEX          Convert ascii to hex
+            MOVEA.L    D3,A5         
 
 END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
             MOVE.B     #14,D0
@@ -32,7 +33,9 @@ END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
             LEA        EN_INPUT,A1      Stores user input into memory
             MOVEQ      #2,D0
             TRAP       #15
+            CLR.L      D3               Clear D3 so that ending address can be stored
             JSR        ASC_HEX          Branch to ascii to hex convesion 
+            MOVEA.L    D3,A6
 
 ASC_HEX     CMPI.B      #$0,D1          Check to see if all ascii characters are converted
             BEQ         END
@@ -68,6 +71,16 @@ EN_ADDR_MSG DC.B    'Please enter an ending address: ',0
 ST_INPUT    DS.B    80
 EN_INPUT    DS.B    80
     END    START        ; last line of source
+
+
+
+
+
+
+
+
+
+
 
 
 *~Font name~Courier New~
