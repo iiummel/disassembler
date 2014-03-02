@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.14.00
-Created On: 3/1/2014 9:42:08 PM
+Created On: 3/2/2014 11:13:02 AM
 
 00000000                             1      INCLUDE "TEST.X68"
 00007000                             2    ORG    $7000

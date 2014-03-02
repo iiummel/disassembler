@@ -1,0 +1,295 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.14.00
+Created On: 3/2/2014 11:47:44 AM
+
+00000000                             1      INCLUDE "TEST.X68"
+00007000                             2    ORG    $7000
+00007000                             3      
+00007000                             4    
+00007000                             5    ;MOVE.L $1234, D7
+00007000  2200                       6    MOVE.L    D0, D1
+00007002  1602                       7    MOVE.B    D2, D3
+00007004  3401                       8    MOVE.W    D1, D2
+00007004  3401                       9  -------------------- end include --------------------
+00007006                            10  *-----------------------------------------------------------
+00007006                            11  * Title      :  Team Bits Disassembler
+00007006                            12  * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
+00007006                            13  * Date       :  Who cares? Our code is timeless mofo.
+00007006                            14  * Description:  Bish, you know what the fuck dis shiit izz.
+00007006                            15  *-----------------------------------------------------------
+00001000                            16      ORG    $1000
+00001000                            17  START:                  
+00001000                            18      
+00001000  43F9 000011EC             19              LEA        INTRO,A1         Display intro message
+00001006  103C 000E                 20              MOVE.B     #14,D0
+0000100A  4E4F                      21              TRAP       #15
+0000100C                            22   
+0000100C  6000 0002                 23              BRA        START_ADDR       Branch to request starting address
+00001010                            24  
+00001010  43F9 00001211             25  START_ADDR  LEA        ST_ADDR_MSG,A1   Display starting address message
+00001016  103C 000E                 26              MOVE.B     #14,D0
+0000101A  4E4F                      27              TRAP       #15
+0000101C                            28             
+0000101C  43F9 00001254             29              LEA        ST_INPUT,A1      Stores user input into memory
+00001022  7002                      30              MOVEQ      #2,D0
+00001024  4E4F                      31              TRAP       #15
+00001026                            32              
+00001026  4EB9 00001052             33              JSR        ASC_HEX          Convert ascii to hex
+0000102C  2A43                      34              MOVEA.L    D3,A5            Store starting address into A5
+0000102E                            35  
+0000102E  43F9 00001233             36  END_ADDR    LEA        EN_ADDR_MSG,A1   Display starting address message
+00001034  103C 000E                 37              MOVE.B     #14,D0
+00001038  4E4F                      38              TRAP       #15
+0000103A                            39              
+0000103A  43F9 000012A4             40              LEA        EN_INPUT,A1      Stores user input into memory
+00001040  7002                      41              MOVEQ      #2,D0
+00001042  4E4F                      42              TRAP       #15
+00001044  4283                      43              CLR.L      D3               Clear D3 so that ending address can be stored
+00001046  4EB9 00001052             44              JSR        ASC_HEX          Branch to ascii to hex convesion 
+0000104C  2C43                      45              MOVEA.L    D3,A6            Store ending address into A6
+0000104E                            46              
+0000104E  6000 0034                 47              BRA        LOOP
+00001052                            48  
+00001052  0C01 0000                 49  ASC_HEX     CMPI.B      #$0,D1          Check to see if all ascii characters are converted
+00001056  6700 002A                 50              BEQ         DONE
+0000105A  1419                      51              MOVE.B     (A1)+,D2         Move first number to data register
+0000105C  0C02 0039                 52              CMPI.B      #$39,D2         See if D2 is a number
+00001060  6F00 000A                 53              BLE         CON_NUM          
+00001064                            54              
+00001064  0402 0037                 55  CON_LET     SUBI.B      #$37,D2         Convert ascii to hex letter
+00001068  6000 000A                 56              BRA         COUNTER        
+0000106C                            57  
+0000106C  0402 0030                 58  CON_NUM     SUBI.B      #$30,D2         Convert ascii to hex number
+00001070  6000 0002                 59              BRA         COUNTER
+00001074                            60  
+00001074                            61              
+00001074  5301                      62  COUNTER     SUBI.B      #$1,D1          Decrement counter
+00001076  D602                      63              ADD.B       D2,D3           Add converted number to rest of convereted address
+00001078  0C01 0000                 64              CMPI.B      #$0,D1          Check to see if all ascii characters are converted
+0000107C  67D4                      65              BEQ         ASC_HEX        
+0000107E  E99B                      66              ROL.L       #4,D3           Move converted address number to the left to add new number.
+00001080                            67  
+00001080  60D0                      68              BRA         ASC_HEX
+00001082                            69  
+00001082  4E75                      70  DONE         RTS
+00001084                            71  
+00001084  3C1D                      72  LOOP        MOVE.W  (A5)+, D6           Move instruction to D6
+00001086  47F9 000012F4             73              LEA     goodbuffer, A3
+0000108C  4EB9 0000109A             74              JSR     FIRST4BITS          Get the first 4 bits of the instruction
+00001092  BCCD                      75              CMP.W   A5, A6
+00001094  6700 0152                 76              BEQ     END
+00001098  60EA                      77              BRA     LOOP
+0000109A                            78  
+0000109A                            79  FIRST4BITS
+0000109A  3A06                      80              MOVE.W  D6, D5              Move the instruction so we can shift it
+0000109C  E04D                      81              LSR.W   #8, D5
+0000109E  E84D                      82              LSR.W   #4, D5
+000010A0  CAFC 0008                 83              MULU    #8, D5             Offset D5 to show the word binary for the instruction
+000010A4  41F9 000010B0             84              LEA     INSTTABLE, A0      Set the table to A0 so we know where to jump to
+000010AA  4EB0 5000                 85              JSR     00(A0,D5)          Set jumptable
+000010AE  4E75                      86              RTS
+000010B0                            87              
+000010B0                            88  INSTTABLE
+000010B0  4EB9 0000111E             89      JSR     INSTR0000       *Call function for instructions that start with 0000
+000010B6  4E75                      90      RTS
+000010B8  4EB9 00001120             91      JSR     INSTR0001       *Call function for instructions that start with 0001
+000010BE  4E75                      92      RTS
+000010C0  4EB9 00001144             93      JSR     INSTR0010       *Call function for instructions that start with 0010
+000010C6  4E75                      94      RTS
+000010C8  4EB9 00001168             95      JSR     INSTR0011       *Call function for instructions that start with 0011
+000010CE  4E75                      96      RTS
+000010D0  4EB9 0000118C             97      JSR     INSTR0100       *Call function for instructions that start with 0100
+000010D6  4E75                      98      RTS
+000010D8  4EB9 0000118E             99      JSR     INSTR0101       *Call function for instructions that start with 0101
+000010DE  4E75                     100      RTS
+000010E0  4EB9 00001190            101      JSR     INSTR0110       *Call function for instructions that start with 0110
+000010E6  4E75                     102      RTS
+000010E8  4EB9 00001192            103      JSR     INSTR0111       *Call function for instructions that start with 0111
+000010EE  4E75                     104      RTS
+000010F0  4EB9 000011B6            105      JSR     INSTR1000       *Call function for instructions that start with 1000
+000010F6  4E75                     106      RTS
+000010F8  4EB9 000011D2            107      JSR     INSTR1001       *Call function for instructions that start with 1001
+000010FE  4E75                     108      RTS
+00001100  4EB9 000011D4            109      JSR     INSTR1011       *Call function for instructions that start with 1011
+00001106  4E75                     110      RTS
+00001108  4EB9 000011D6            111      JSR     INSTR1100       *Call function for instructions that start with 1100
+0000110E  4E75                     112      RTS
+00001110  4EB9 000011D8            113      JSR     INSTR1110       *Call function for instructions that start with 1110
+00001116  4E75                     114      RTS
+00001118  4EB9 000011DA            115      JSR     INSTR1101       *Call function for instructions that start with 1101
+0000111E                           116  
+0000111E                           117  ********************************************************
+0000111E                           118  * 0000 - ADDI, ANDI, BCHG, CMPI, EORI INSTRUCTION'S    *
+0000111E                           119  ********************************************************
+0000111E  4E75                     120  INSTR0000   RTS
+00001120                           121  ********************************************************
+00001120                           122  * 0001 - MOVE.B INSTRUCTION                            *
+00001120                           123  ********************************************************
+00001120                           124  INSTR0001   
+00001120  16FC 004D                125      MOVE.B  #'M',(A3)+
+00001124  16FC 004F                126      MOVE.B  #'O',(A3)+
+00001128  16FC 0056                127      MOVE.B  #'V',(A3)+
+0000112C  16FC 0045                128      MOVE.B  #'E',(A3)+
+00001130  16FC 002E                129      MOVE.B  #'.',(A3)+
+00001134  16FC 0042                130      MOVE.B  #'B',(A3)+
+00001138  16FC 0020                131      MOVE.B  #' ',(A3)+
+0000113C  4EB9 000011DC            132      JSR     EACODE
+00001142  4E75                     133      RTS
+00001144                           134  ********************************************************
+00001144                           135  * 0010 - MOVE.L INSTRUCTION                            *
+00001144                           136  ********************************************************
+00001144                           137  INSTR0010
+00001144  16FC 004D                138      MOVE.B  #'M',(A3)+
+00001148  16FC 004F                139      MOVE.B  #'O',(A3)+
+0000114C  16FC 0056                140      MOVE.B  #'V',(A3)+
+00001150  16FC 0045                141      MOVE.B  #'E',(A3)+
+00001154  16FC 002E                142      MOVE.B  #'.',(A3)+
+00001158  16FC 004C                143      MOVE.B  #'L',(A3)+
+0000115C  16FC 0020                144      MOVE.B  #' ',(A3)+
+00001160  4EB9 000011DC            145      JSR     EACODE
+00001166  4E75                     146      RTS
+00001168                           147  ********************************************************
+00001168                           148  * 0011 - MOVE.W INSTRUCTION                            *
+00001168                           149  ********************************************************
+00001168                           150  INSTR0011
+00001168  16FC 004D                151      MOVE.B  #'M',(A3)+
+0000116C  16FC 004F                152      MOVE.B  #'O',(A3)+
+00001170  16FC 0056                153      MOVE.B  #'V',(A3)+
+00001174  16FC 0045                154      MOVE.B  #'E',(A3)+
+00001178  16FC 002E                155      MOVE.B  #'.',(A3)+
+0000117C  16FC 0057                156      MOVE.B  #'W',(A3)+
+00001180  16FC 0020                157      MOVE.B  #' ',(A3)+
+00001184  4EB9 000011DC            158      JSR     EACODE
+0000118A  4E75                     159      RTS
+0000118C                           160  ********************************************************
+0000118C                           161  * 0100 - CLR, JSR, LEA, MOVEM, RTS INSTRUCTION'S       *                              
+0000118C                           162  ********************************************************
+0000118C                           163  INSTR0100   
+0000118C  4E75                     164      RTS
+0000118E                           165  ********************************************************
+0000118E                           166  * 0101 - SUBQ INSTRUCTION                              *       
+0000118E                           167  ********************************************************
+0000118E                           168  INSTR0101
+0000118E  4E75                     169      RTS
+00001190                           170  ********************************************************
+00001190                           171  * 0110 - BGT, BLE, BVS INSTRUCTION'S                   *                  
+00001190                           172  ********************************************************
+00001190                           173  INSTR0110   
+00001190  4E75                     174      RTS
+00001192                           175  ********************************************************
+00001192                           176  * 0111 - MOVEQ INSTRUCTION                             *        
+00001192                           177  ********************************************************
+00001192                           178  INSTR0111
+00001192  16FC 004D                179      MOVE.B  #'M',(A3)+
+00001196  16FC 004F                180      MOVE.B  #'O',(A3)+
+0000119A  16FC 0056                181      MOVE.B  #'V',(A3)+
+0000119E  16FC 0045                182      MOVE.B  #'E',(A3)+
+000011A2  16FC 002E                183      MOVE.B  #'.',(A3)+
+000011A6  16FC 0051                184      MOVE.B  #'Q',(A3)+
+000011AA  16FC 0020                185      MOVE.B  #' ',(A3)+
+000011AE  4EB9 000011DC            186      JSR     EACODE
+000011B4  4E75                     187      RTS
+000011B6                           188  ********************************************************
+000011B6                           189  * 1000 - DIVU INSTRUCTION                              *       
+000011B6                           190  ********************************************************
+000011B6                           191  INSTR1000
+000011B6  16FC 0044                192      MOVE.B  #'D',(A3)+
+000011BA  16FC 0049                193      MOVE.B  #'I',(A3)+
+000011BE  16FC 0056                194      MOVE.B  #'V',(A3)+
+000011C2  16FC 0055                195      MOVE.B  #'U',(A3)+
+000011C6  16FC 0020                196      MOVE.B  #' ',(A3)+
+000011CA  4EB9 000011DC            197      JSR     EACODE
+000011D0  4E75                     198      RTS
+000011D2                           199  ********************************************************
+000011D2                           200  * 1001 - SUB, SUBA INSTRUCTION'S                       *              
+000011D2                           201  ********************************************************
+000011D2                           202  INSTR1001   
+000011D2  4E75                     203      RTS
+000011D4                           204  ********************************************************
+000011D4                           205  * 1011 - CMP, CMPA, EOR INSTRUCTION'S                  *                   
+000011D4                           206  ********************************************************
+000011D4                           207  INSTR1011   
+000011D4  4E75                     208      RTS
+000011D6                           209  ********************************************************
+000011D6                           210  * 1100 - AND, MULS INSTRUCTION'S                       *              
+000011D6                           211  ********************************************************
+000011D6                           212  INSTR1100   
+000011D6  4E75                     213      RTS
+000011D8                           214  ********************************************************
+000011D8                           215  * 1110 - ASR, LSL, ROL INSTRUCTION'S                   *                  
+000011D8                           216  ********************************************************
+000011D8                           217  INSTR1110   
+000011D8  4E75                     218      RTS
+000011DA                           219  ********************************************************
+000011DA                           220  * 1101 - ADD, ADDA INSTRUCTION'S                       *               
+000011DA                           221  ********************************************************
+000011DA                           222  INSTR1101   
+000011DA  4E75                     223      RTS
+000011DC                           224  
+000011DC                           225  ********************************************************
+000011DC                           226  * EA CODE                                              *
+000011DC                           227  ********************************************************
+000011DC                           228  EACODE
+000011DC  43F9 000012F4            229      LEA     goodbuffer, A1
+000011E2  700D                     230      MOVEQ   #13, D0
+000011E4  4E4F                     231      TRAP    #15
+000011E6  4E75                     232      RTS
+000011E8                           233  
+000011E8                           234  END
+000011E8  FFFF FFFF                235      SIMHALT             ; halt simulator
+000011EC                           236      
+000011EC                           237  ********************************************************
+000011EC                           238  * DISPLAY MESSAGES                                     *
+000011EC                           239  ********************************************************
+000011EC  =0000000D                240  CR          EQU     $0D
+000011EC  =0000000A                241  LF          EQU     $0A
+000011EC= 44 69 73 61 73 73 ...    242  INTRO       DC.B    'Disassembler Program for Team Bits',CR,LF,0
+00001211= 50 6C 65 61 73 65 ...    243  ST_ADDR_MSG DC.B    'Please enter a starting address: ',0
+00001233= 50 6C 65 61 73 65 ...    244  EN_ADDR_MSG DC.B    'Please enter an ending address: ',0
+00001254                           245  ST_INPUT    DS.B    80                  Stores starting address input
+000012A4                           246  EN_INPUT    DS.B    80                  Stores ending address input
+000012F4= 50                       247  goodbuffer  DC.B    80  
+000012F5                           248      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ASC_HEX             1052
+CON_LET             1064
+CON_NUM             106C
+COUNTER             1074
+CR                  D
+DONE                1082
+EACODE              11DC
+END                 11E8
+END_ADDR            102E
+EN_ADDR_MSG         1233
+EN_INPUT            12A4
+FIRST4BITS          109A
+GOODBUFFER          12F4
+INSTR0000           111E
+INSTR0001           1120
+INSTR0010           1144
+INSTR0011           1168
+INSTR0100           118C
+INSTR0101           118E
+INSTR0110           1190
+INSTR0111           1192
+INSTR1000           11B6
+INSTR1001           11D2
+INSTR1011           11D4
+INSTR1100           11D6
+INSTR1101           11DA
+INSTR1110           11D8
+INSTTABLE           10B0
+INTRO               11EC
+LF                  A
+LOOP                1084
+START               1000
+START_ADDR          1010
+ST_ADDR_MSG         1211
+ST_INPUT            1254
