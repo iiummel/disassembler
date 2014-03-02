@@ -1,19 +1,15 @@
-00001000 Starting Address
+00000000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.14.00
-Created On: 3/1/2014 9:06:33 PM
+Created On: 3/1/2014 9:29:41 PM
 
 00007000                             1    ORG    $7000
 00007000                             2      
 00007000                             3    
-00007000  2E38 1234                  4    MOVE.L $1234, D7
-00007004  2200                       5    MOVE.L D0, D1
-00007006                             6    
-00007006                             7  
-00007006                             8  
-00007006                             9  
-00007006                            10  
-00007006                            11  
-Line 12 WARNING: END directive missing, starting address not set
+00007000                             4    ;MOVE.L $1234, D7
+00007000  2200                       5    MOVE.L    D0, D1
+00007002  1602                       6    MOVE.B    D2, D3
+00007004  3401                       7    MOVE.W    D1, D2
+Line 8 WARNING: END directive missing, starting address not set
 
 No errors detected
 1 warning generated
