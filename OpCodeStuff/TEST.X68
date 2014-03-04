@@ -2,9 +2,15 @@
     
   
   ;MOVE.L $1234, D7
+  CLR       D0
+  CLR.B     D0
+  CLR.W     D0
+  CLR.L     D0
   MOVE.L    D0, D1
   MOVE.B    D2, D3
   MOVE.W    D1, D2
+
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
