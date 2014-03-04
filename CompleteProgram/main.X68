@@ -2,8 +2,9 @@
 *-----------------------------------------------------------
 * Title      :  Team Bits Disassembler
 * Written by :  Himanshu Mehru, William Tanna, Igor Ummel
-* Date       :  Who cares? Our code is timeless mofo.
-* Description:  Bish, you know what the fuck dis shiit izz.
+* Date       :  02-18-2014
+* Description:  This program disassembles machine code back
+*               to 68K Assembly Language instructions
 *-----------------------------------------------------------
     ORG    $1000
 START:                  
@@ -238,6 +239,7 @@ ST_INPUT    DS.B    80                  Stores starting address input
 EN_INPUT    DS.B    80                  Stores ending address input
 goodbuffer  DC.B    80  
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
