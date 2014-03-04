@@ -66,6 +66,7 @@ INSTTABLE
 * 0000 - ADDI, ANDI, BCHG, CMPI, EORI INSTRUCTION'S    
 ********************************************************
 INSTR0000   RTS
+    
 ********************************************************
 * 0001 - MOVE.B INSTRUCTION                            
 ********************************************************
@@ -109,6 +110,8 @@ INSTR0011
 * 0100 - CLR, JSR, LEA, MOVEM, RTS INSTRUCTION'S                                     
 ********************************************************
 INSTR0100   
+    MOVE.W  D7, D5      ;Move the instruction so we can shift it
+
     RTS
 ********************************************************
 * 0101 - SUBQ INSTRUCTION                                     
@@ -176,10 +179,13 @@ INSTR1101
 * EA CODE                                              *
 ********************************************************
 EACODE
-    LEA     goodbuffer, A1
-    MOVEQ   #13, D0
-    TRAP    #15
-    RTS
+    
+
+
+    ;LEA     goodbuffer, A1
+    ;MOVEQ   #13, D0
+    ;TRAP    #15
+    ;RTS
 
 END
 
